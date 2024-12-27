@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Audio Expert",
+  "version": "0.1",
+  "description": "Manipulate the audio of any website like a boss",
+  "permissions": ["activeTab", "scripting", "tabs", "storage", "unlimitedStorage"],
+  "host_permissions": ["*://*/*"],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
