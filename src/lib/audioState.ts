@@ -28,17 +28,17 @@ export const compressorDefaults = {
 
 // Actions
 export const audioActions = {
-  setVolume: (value) => {
+  setVolume: (value: number) => {
     volumeState.value = { ...volumeState.value, value: value };
     sendToContentScript("SET_VOLUME", value);
   },
 
-  setGain: (value) => {
+  setGain: (value: number) => {
     gainState.value = { ...gainState.value, value: value };
     sendToContentScript("SET_GAIN", Number(value));
   },
 
-  updateCompressor: (param, value) => {
+  updateCompressor: (param: string, value: number) => {
     compressorState.value = {
       ...compressorState.value,
       [param]: value,
@@ -46,7 +46,7 @@ export const audioActions = {
     sendToContentScript("SET_COMP", { param, value });
   },
 
-  toggleModule: (module) => {
+  toggleModule: (module: 'volume' | 'gain' | 'compressor') => {
     const moduleMap = {
       volume: volumeState,
       gain: gainState,
@@ -83,7 +83,10 @@ export const audioActions = {
 };
 
 // Helper function to send messages to content script
-function sendToContentScript(type, payload) {
+function sendToContentScript(
+  type: string,
+  payload: number | boolean | { param: string; value: number }
+) {
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]?.id) {

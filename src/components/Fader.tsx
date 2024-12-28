@@ -1,17 +1,18 @@
 // components/Fader.jsx
+import { cn } from "@/lib/utils";
 import { useComputed } from "@preact/signals-react";
-import { cn } from "../utils/cn";
 
-export default function Fader({
-  signal,
-  defaults,
-  onChange,
-  paramName = null,
-}) {
-  
+interface FaderProps {
+  signal: { value: { [key: string]: number | boolean }; };
+  defaults: { min: number; max: number; step: number; label: string; prefix?: string };
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  paramName?: string | null | undefined;
+}
+
+export default function Fader({ signal, defaults, onChange, paramName = null }: FaderProps) {
   const { min, max, step, label, prefix } = defaults;
 
-  // Calculate and show 5 ticks on the fader 
+  // Calculate and show 5 ticks on the fader
   const calculateTicks = () => {
     const tickCount = 5;
     const interval = (max - min) / (tickCount - 1);
@@ -33,7 +34,7 @@ export default function Fader({
       className={cn(
         "relative min-w-24 p-4",
         "bg-white rounded-lg shadow-sm",
-        "flex flex-col items-center gap-4",
+        "flex flex-col items-center gap-4"
         // !isActive && "opacity-50"
       )}
     >
@@ -52,7 +53,7 @@ export default function Fader({
           min={min}
           max={max}
           step={step}
-          value={value}
+          value={value.value as number}
           onChange={onChange}
           className={cn("w-24  rounded-full", "bg-gray-200", isActive && "cursor-pointer")}
           list={datalistId}

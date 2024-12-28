@@ -1,6 +1,6 @@
 // App.jsx
 import { useEffect } from "react";
-import Fader from "./components/Fader";
+import Fader from "@/components/Fader";
 import {
   volumeState,
   gainState,
@@ -9,8 +9,8 @@ import {
   gainDefaults,
   compressorState,
   compressorDefaults,
-} from "./signals/audioState";
-import { cn } from "./utils/cn";
+} from "@/lib/audioState";
+import { cn } from "@/lib/utils";
 
 export default function App() {
   useEffect(() => {
@@ -46,7 +46,9 @@ export default function App() {
               <Fader
                 signal={volumeState}
                 defaults={volumeDefaults}
-                onChange={(e) => audioActions.setVolume(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  audioActions.setVolume(Number(e.target.value))
+                }
               />
             </div>
           </div>
@@ -69,7 +71,9 @@ export default function App() {
             <Fader
               signal={gainState}
               defaults={gainDefaults}
-              onChange={(e) => audioActions.setGain(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                audioActions.setGain(Number(e.target.value))
+              }
             />
           </div>
 
@@ -93,31 +97,41 @@ export default function App() {
               <Fader
                 signal={compressorState}
                 defaults={compressorDefaults.threshold}
-                onChange={(e) => audioActions.updateCompressor("threshold", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  audioActions.updateCompressor("threshold", Number(e.target.value))
+                }
                 paramName="threshold"
               />
               <Fader
                 signal={compressorState}
                 defaults={compressorDefaults.knee}
-                onChange={(e) => audioActions.updateCompressor("knee", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  audioActions.updateCompressor("knee", Number(e.target.value))
+                }
                 paramName="knee"
               />
               <Fader
                 signal={compressorState}
                 defaults={compressorDefaults.ratio}
-                onChange={(e) => audioActions.updateCompressor("ratio", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  audioActions.updateCompressor("ratio", Number(e.target.value))
+                }
                 paramName="ratio"
               />
               <Fader
                 signal={compressorState}
                 defaults={compressorDefaults.attack}
-                onChange={(e) => audioActions.updateCompressor("attack", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  audioActions.updateCompressor("attack", Number(e.target.value))
+                }
                 paramName="attack"
               />
               <Fader
                 signal={compressorState}
                 defaults={compressorDefaults.release}
-                onChange={(e) => audioActions.updateCompressor("release", e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  audioActions.updateCompressor("release", Number(e.target.value))
+                }
                 paramName="release"
               />
             </div>
