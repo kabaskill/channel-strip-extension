@@ -1,6 +1,18 @@
 // components/Fader.jsx
-import { FaderProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
+
+export interface FaderProps {
+  value: number;
+  isActive: boolean;
+  defaults: {
+    min: number;
+    max: number;
+    step: number;
+    label: string;
+    prefix?: string;
+  };
+  onChange?: (newValue: number) => void;
+}
 
 export default function Fader({ value, isActive, defaults, onChange }: FaderProps) {
   const { min, max, step, label, prefix } = defaults;
@@ -21,10 +33,11 @@ export default function Fader({ value, isActive, defaults, onChange }: FaderProp
   return (
     <div
       className={cn(
-        "relative min-w-24 p-4",
+        "relative flex-1  p-4",
         "bg-white rounded-lg shadow-sm",
         "flex flex-col items-center gap-4",
-        !isActive && "opacity-50"
+        !isActive && "opacity-50",
+        
       )}
     >
       <label className="font-medium text-gray-900 text-sm">{label}</label>
@@ -34,19 +47,19 @@ export default function Fader({ value, isActive, defaults, onChange }: FaderProp
         {prefix}
       </span>
 
-      <div className="w-full flex-1 flex items-center">
+   
         <input
           type="range"
           min={min}
           max={max}
           step={step}
           value={value}
-          onChange={onChange}
-          className={cn("w-24  rounded-full", "bg-gray-200", isActive && "cursor-pointer")}
+          onChange={(e) => onChange && onChange(Number(e.target.value))}
+          className={cn("rounded-full w-full", "bg-gray-200", isActive && "cursor-pointer")}
           list={datalistId}
           disabled={!isActive}
         />
-      </div>
+  
 
       <datalist id={datalistId}>
         {ticks.map((tickValue) => (

@@ -18,6 +18,7 @@ export interface CompressorState {
   ratio: number;
   attack: number;
   release: number;
+  reduction: number;
 }
 
 // Simplified message types
@@ -26,19 +27,6 @@ export type Message = {
   payload: number | boolean | { param: CompressorParam; value: number };
 };
 
-// Props interfaces
-export interface FaderProps {
-  value: number;
-  isActive: boolean;
-  defaults: {
-    min: number;
-    max: number;
-    step: number;
-    label: string;
-    prefix?: string;
-  };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
 
 // Audio action types
 export interface AudioActions {

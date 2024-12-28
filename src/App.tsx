@@ -1,9 +1,11 @@
-import { volumeState, gainState, audioActions, volumeDefaults, gainDefaults, compressorState, compressorDefaults} from "@/lib/audioState"; //prettier-ignore
+import { useSignals } from "@preact/signals-react/runtime";
+import { volumeState, gainState, audioActions, volumeDefaults, gainDefaults } from "@/lib/audioState"; //prettier-ignore
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Fader from "@/components/Fader";
+import Knob from "./components/ui/Knob";
 import { cn } from "@/lib/utils";
 import { useEffect } from "react";
-import Fader from "@/components/Fader";
-import AnimatedCircularProgressBar from "./components/ui/animated-circular-progress-bar";
-import { useSignals } from "@preact/signals-react/runtime";
+import Compressor from "./components/Compressor";
 
 export default function App() {
   useSignals();
@@ -12,26 +14,46 @@ export default function App() {
   }, []);
 
   return (
-    <div className={cn("w-[800px] min-h-[400px]", "bg-blue-400 p-6", "flex flex-col gap-6")}>
-      <h1 className="text-xl font-bold text-center">Audio Expert</h1>
+    <div className="w-[800px] h-[500px] text-white">
+      <div className="size-full bg-slate-800 flex gap-4 p-2">
+        <h1 className="text-xl font-bold ">Channel Strip</h1>
+        <Tabs defaultValue="pre-eq" className="w-5/6 bg-green-400">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="pre-eq">Pre EQ</TabsTrigger>
+            <TabsTrigger value="compressor">Compressor</TabsTrigger>
+            <TabsTrigger value="post-eq">Post EQ</TabsTrigger>
+          </TabsList>
 
-      <AnimatedCircularProgressBar
-        max={100}
-        min={0}
-        value={45}
-        gaugePrimaryColor="blue"
-        gaugeSecondaryColor="red"
-        className="w-40 h-40"
-      />
+          <TabsContent className=" flex justify-center items-center" value="pre-eq">
+            Pre EQ
+          </TabsContent>
 
-      <div className="flex-1 p-4 bg-blue-200 rounded-lg shadow-md overflow-x-auto">
-        <div className="flex gap-2 min-w-min">
-          <div>
+          <TabsContent className="" value="compressor">
+            <Compressor />
+          </TabsContent>
+
+          <TabsContent className=" flex justify-center items-center" value="post-eq">
+            Post EQ
+          </TabsContent>
+        </Tabs>
+
+        <div className="w-1/6 flex flex-col justify-between">
+          <Knob
+            value={gainState.value.value}
+            isActive={gainState.value.isActive}
+            defaults={gainDefaults}
+            onChange={(value: number) => audioActions.setGain(value)}
+            gaugePrimaryColor="green"
+            gaugeSecondaryColor="gray"
+            sensitivity={0.4}
+            className="w-full"
+          />
+          <div className="flex flex-col gap-2  bg-red-600">
             <button
               type="button"
               className={cn(
                 "px-4 py-2 rounded-md",
-                "bg-white border-2 border-gray-300",
+                "bg-white text-black border-2 border-gray-300",
                 "font-medium text-sm",
                 "transition-colors duration-200",
                 "hover:bg-gray-50 active:bg-gray-100",
@@ -42,101 +64,12 @@ export default function App() {
               Vol Enable
             </button>
 
-            <div>
-              <Fader
-                value={volumeState.value.value}
-                isActive={volumeState.value.isActive}
-                defaults={volumeDefaults}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  audioActions.setVolume(Number(e.target.value))
-                }
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="button"
-              className={cn(
-                "px-4 py-2 rounded-md",
-                "bg-white border-2 border-gray-300",
-                "font-medium text-sm",
-                "transition-colors duration-200",
-                "hover:bg-gray-50 active:bg-gray-100",
-                "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              )}
-              onClick={() => audioActions.toggleModule("gain")}
-            >
-              Gain Enable
-            </button>
             <Fader
-              value={gainState.value.value}
-              isActive={gainState.value.isActive}
-              defaults={gainDefaults}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                audioActions.setGain(Number(e.target.value))
-              }
+              value={volumeState.value.value}
+              isActive={volumeState.value.isActive}
+              defaults={volumeDefaults}
+              onChange={(value: number) => audioActions.setVolume(value)}
             />
-          </div>
-
-          <div>
-            <button
-              type="button"
-              className={cn(
-                "px-4 py-2 rounded-md",
-                "bg-white border-2 border-gray-300",
-                "font-medium text-sm",
-                "transition-colors duration-200",
-                "hover:bg-gray-50 active:bg-gray-100",
-                "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              )}
-              onClick={() => audioActions.toggleModule("compressor")}
-            >
-              Comp Enable
-            </button>
-
-            <div className="flex gap-4 p-2 bg-orange-400">
-              <Fader
-                value={compressorState.value.threshold}
-                isActive={compressorState.value.isActive}
-                defaults={compressorDefaults.threshold}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  audioActions.updateCompressor("threshold", Number(e.target.value))
-                }
-              />
-              <Fader
-                value={compressorState.value.threshold}
-                isActive={compressorState.value.isActive}
-                defaults={compressorDefaults.knee}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  audioActions.updateCompressor("knee", Number(e.target.value))
-                }
-              />
-              <Fader
-                value={compressorState.value.threshold}
-                isActive={compressorState.value.isActive}
-                defaults={compressorDefaults.ratio}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  audioActions.updateCompressor("ratio", Number(e.target.value))
-                }
-              />
-              <Fader
-                value={compressorState.value.threshold}
-                isActive={compressorState.value.isActive}
-                defaults={compressorDefaults.attack}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  audioActions.updateCompressor("attack", Number(e.target.value))
-                }
-              />
-              <Fader
-                value={compressorState.value.threshold}
-                isActive={compressorState.value.isActive}
-                defaults={compressorDefaults.release}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  audioActions.updateCompressor("release", Number(e.target.value))
-                }
-              />
-            </div>
           </div>
         </div>
       </div>

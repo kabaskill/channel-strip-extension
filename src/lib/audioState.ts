@@ -8,7 +8,7 @@ export const volumeDefaults = { label: "Volume", prefix: "%", min: 0, max: 100, 
 
 // GAIN
 export const gainState = signal({ isActive: true, value: 1 });
-export const gainDefaults = { label: "Gain", prefix: "x", min: 0, max: 4, step: 0.05 };
+export const gainDefaults = { label: "Gain", prefix: "x", min: 1, max: 5, step: 0.05 };
 
 // COMPRESSOR
 export const compressorState = signal({
@@ -18,6 +18,7 @@ export const compressorState = signal({
   ratio: 12,
   attack: 3,
   release: 250,
+  reduction: 0,
 });
 export const compressorDefaults = {
   threshold: { label: "Threshold", prefix: "dB", min: -100, max: 0, step: 1 },
@@ -25,6 +26,7 @@ export const compressorDefaults = {
   ratio: { label: "Ratio", prefix: ":1", min: 1, max: 20, step: 1 },
   attack: { label: "Attack", prefix: "ms", min: 0, max: 1000, step: 1 },
   release: { label: "Release", prefix: "ms", min: 0, max: 1000, step: 1 },
+  reduction: { label: "Reduction", prefix: "dB", min: 0, max: 100, step: 1 },
 };
 
 // Actions
