@@ -40,7 +40,7 @@ function initializeAudio() {
 function setVolume(volume) {
   const media = document.querySelector("video, audio");
   if (media) {
-    media.volume = volume / 100;
+    (media as HTMLMediaElement).volume = volume / 100;
   }
 }
 

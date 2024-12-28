@@ -1,15 +1,8 @@
 // components/Fader.jsx
+import { FaderProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { useComputed } from "@preact/signals-react";
 
-interface FaderProps {
-  signal: { value: { [key: string]: number | boolean }; };
-  defaults: { min: number; max: number; step: number; label: string; prefix?: string };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  paramName?: string | null | undefined;
-}
-
-export default function Fader({ signal, defaults, onChange, paramName = null }: FaderProps) {
+export default function Fader({ value, isActive, defaults, onChange }: FaderProps) {
   const { min, max, step, label, prefix } = defaults;
 
   // Calculate and show 5 ticks on the fader
@@ -25,21 +18,15 @@ export default function Fader({ signal, defaults, onChange, paramName = null }: 
   const datalistId = `tickmarks-${label.toLowerCase()}`;
   const ticks = calculateTicks();
 
-  // Computed values for triggering re-renders (otherwise state changes are not detected)
-  const value = useComputed(() => (paramName ? signal.value[paramName] : signal.value.value));
-  const isActive = useComputed(() => signal.value.isActive);
-
   return (
     <div
       className={cn(
         "relative min-w-24 p-4",
         "bg-white rounded-lg shadow-sm",
-        "flex flex-col items-center gap-4"
-        // !isActive && "opacity-50"
+        "flex flex-col items-center gap-4",
+        !isActive && "opacity-50"
       )}
     >
-      {!isActive && <div className="absolute inset-0 bg-gray-900/20 rounded-lg backdrop-blur-sm" />}
-
       <label className="font-medium text-gray-900 text-sm">{label}</label>
 
       <span className="text-lg font-semibold text-gray-900">
@@ -53,7 +40,7 @@ export default function Fader({ signal, defaults, onChange, paramName = null }: 
           min={min}
           max={max}
           step={step}
-          value={value.value as number}
+          value={value}
           onChange={onChange}
           className={cn("w-24  rounded-full", "bg-gray-200", isActive && "cursor-pointer")}
           list={datalistId}

@@ -1,4 +1,5 @@
 import { signal } from "@preact/signals-react";
+import { ModuleType } from "./types";
 
 // AUDIO MODULES
 // VOLUME
@@ -46,20 +47,26 @@ export const audioActions = {
     sendToContentScript("SET_COMP", { param, value });
   },
 
-  toggleModule: (module: 'volume' | 'gain' | 'compressor') => {
-    const moduleMap = {
-      volume: volumeState,
-      gain: gainState,
-      compressor: compressorState,
-    };
-
-    moduleMap[module].value = {
-      ...moduleMap[module].value,
-      isActive: !moduleMap[module].value.isActive,
-    };
-
+  toggleModule: (module: ModuleType) => {
+    switch (module) {
+      case "volume":
+        volumeState.value = { ...volumeState.value, isActive: !volumeState.value.isActive };
+        break;
+      case "gain":
+        gainState.value = { ...gainState.value, isActive: !gainState.value.isActive };
+        break;
+      case "compressor":
+        compressorState.value = {
+          ...compressorState.value,
+          isActive: !compressorState.value.isActive,
+        };
+        break;
+      default:
+        break;
+    }
+    return;
     // Send the updated active state to content script
-    sendToContentScript(`SET_${module.toUpperCase()}_ACTIVE`, moduleMap[module].value.isActive);
+    // sendToContentScript(`SET_${module.toUpperCase()}_ACTIVE`, moduleMap[module].value.isActive);
   },
 
   // Initialize state from storage

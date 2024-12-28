@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Audio Expert",
+  "name": "Channel Strip",
   "version": "0.1",
   "description": "Manipulate the audio of any website like a boss",
   "permissions": ["activeTab", "scripting", "tabs", "storage", "unlimitedStorage"],
@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["*://*/*"],
-      "js": ["contentScript.js"]
+      "js": ["contentScript.ts"]
     }
   ]
 }
