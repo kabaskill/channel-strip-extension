@@ -38,23 +38,17 @@ export default function PitchShift() {
             defaults={pitchShiftDefaults.pitch}
             onChange={(value: number) => updatePitchShift("pitch", value)}
             sensitivity={1}
-            className="w-24 h-24"
-            gaugePrimaryColor="#8b5cf6"
-            gaugeSecondaryColor="#1e293b"
           />
         </div>
 
         {/* Window Size */}
         <div className="flex flex-col items-center justify-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-600/50">
           <Knob
-            value={pitchShift.windowSize}
-            isActive={pitchShift.isActive}
-            defaults={pitchShiftDefaults.windowSize}
-            onChange={(value: number) => updatePitchShift("windowSize", value)}
+            value={pitchshift.windowsize}
+            isactive={pitchshift.isactive}
+            defaults={pitchshiftdefaults.windowsize}
+            onchange={(value: number) => updatepitchshift("windowsize", value)}
             sensitivity={0.01}
-            className="w-24 h-24"
-            gaugePrimaryColor="#8b5cf6"
-            gaugeSecondaryColor="#1e293b"
           />
         </div>
       </div>

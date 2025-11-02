@@ -64,12 +64,6 @@ export default function App() {
             >
               Pitch Shift
             </TabsTrigger>
-            <TabsTrigger 
-              value="mono"
-              className="justify-start w-full data-[state=active]:bg-slate-700"
-            >
-              Mono
-            </TabsTrigger>
           </TabsList>
 
           {/* Column 2: Module Controls */}

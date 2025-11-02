@@ -38,9 +38,6 @@ export default function Gate() {
             defaults={gateDefaults.threshold}
             onChange={(value: number) => updateGate("threshold", value)}
             sensitivity={10}
-            className="w-24 h-24"
-            gaugePrimaryColor="#8b5cf6"
-            gaugeSecondaryColor="#1e293b"
           />
         </div>
 
@@ -52,9 +49,6 @@ export default function Gate() {
             defaults={gateDefaults.smoothing}
             onChange={(value: number) => updateGate("smoothing", value)}
             sensitivity={0.1}
-            className="w-24 h-24"
-            gaugePrimaryColor="#8b5cf6"
-            gaugeSecondaryColor="#1e293b"
           />
         </div>
       </div>

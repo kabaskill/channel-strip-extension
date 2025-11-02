@@ -1,9 +1,11 @@
 import { useAudioStore } from "@/lib/store";
 import { Button } from "./ui/button";
+import Knob from "./ui/Knob";
 
 export default function Limiter() {
   const limiter = useAudioStore((state) => state.limiter);
   const toggleLimiter = useAudioStore((state) => state.toggleLimiter);
+  const updateLimiter = useAudioStore((state) => state.updateLimiter);
 
   return (
     <div className="h-full flex flex-col gap-4 p-4 bg-slate-800/20 rounded-lg border border-slate-700">
@@ -20,14 +22,15 @@ export default function Limiter() {
       </div>
 
       {/* Info */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="text-center text-slate-400">
-          <p className="text-sm">Threshold: {limiter.threshold}dB</p>
-          <p className="text-xs mt-2">
-            (Threshold is set at initialization)
-          </p>
+        <div className="flex flex-col items-center justify-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-600/50">
+          <Knob
+            value={limiter.threshold}
+            isActive={limiter.isActive}
+            defaults={limiterDefaults.threshold}
+            onChange={(value: number) => updateLimiter("threshold", value)}
+            sensitivity={1}
+          />
         </div>
-      </div>
     </div>
   );
 }
