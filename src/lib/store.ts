@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import type { VolumeState, GainState, CompressorState, EQState } from "./types";
 
 // Chrome storage adapter for Zustand persist middleware
 const chromeStorage = {
@@ -25,37 +26,6 @@ const chromeStorage = {
     });
   },
 };
-
-// State interfaces
-export interface VolumeState {
-  isActive: boolean;
-  value: number;
-}
-
-export interface GainState {
-  isActive: boolean;
-  value: number;
-}
-
-export interface CompressorState {
-  isActive: boolean;
-  threshold: number;
-  knee: number;
-  ratio: number;
-  attack: number;
-  release: number;
-  reduction: number;
-}
-
-export interface EQState {
-  isActive: boolean;
-  low: number;
-  mid: number;
-  high: number;
-  lowFreq: number;
-  midFreq: number;
-  highFreq: number;
-}
 
 // Combined store state
 interface AudioStore {

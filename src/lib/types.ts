@@ -16,8 +16,13 @@ export type ModuleType = "volume" | "gain" | "compressor" | "eq";
 export type CompressorParam = "threshold" | "knee" | "ratio" | "attack" | "release";
 export type EQParam = "low" | "mid" | "high" | "lowFreq" | "midFreq" | "highFreq";
 
-// Core interfaces
-export interface AudioState {
+// Core state interfaces
+export interface VolumeState {
+  isActive: boolean;
+  value: number;
+}
+
+export interface GainState {
   isActive: boolean;
   value: number;
 }
@@ -40,6 +45,12 @@ export interface EQState {
   lowFreq: number;
   midFreq: number;
   highFreq: number;
+}
+
+// Legacy - kept for backward compatibility
+export interface AudioState {
+  isActive: boolean;
+  value: number;
 }
 
 // Message payload types
