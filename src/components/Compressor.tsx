@@ -37,7 +37,7 @@ export default function Compressor() {
             isActive={compressor.isActive}
             defaults={compressorDefaults.threshold}
             onChange={(value: number) => updateCompressor("threshold", value)}
-            sensitivity={10}
+            sensitivity={0.5}
             className="w-32 h-32"
           />
         </div>
@@ -50,7 +50,7 @@ export default function Compressor() {
               isActive={compressor.isActive}
               defaults={compressorDefaults.knee}
               onChange={(value: number) => updateCompressor("knee", value)}
-              sensitivity={1}
+              sensitivity={0.5}
             />
           </div>
           <div className="flex flex-col items-center justify-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
@@ -59,7 +59,7 @@ export default function Compressor() {
               isActive={compressor.isActive}
               defaults={compressorDefaults.ratio}
               onChange={(value: number) => updateCompressor("ratio", value)}
-              sensitivity={1}
+              sensitivity={0.3}
             />
           </div>
           <div className="flex flex-col items-center justify-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
@@ -68,7 +68,7 @@ export default function Compressor() {
               isActive={compressor.isActive}
               defaults={compressorDefaults.attack}
               onChange={(value: number) => updateCompressor("attack", value)}
-              sensitivity={1000}
+              sensitivity={0.5}
             />
           </div>
           <div className="flex flex-col items-center justify-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
@@ -77,7 +77,7 @@ export default function Compressor() {
               isActive={compressor.isActive}
               defaults={compressorDefaults.release}
               onChange={(value: number) => updateCompressor("release", value)}
-              sensitivity={1000}
+              sensitivity={0.5}
             />
           </div>
         </div>

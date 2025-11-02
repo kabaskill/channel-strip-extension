@@ -2,8 +2,7 @@ import * as Tone from "tone";
 import { AudioModule, AudioModuleConfig } from "../AudioModule";
 
 export interface PitchShiftModuleParams extends Record<string, number> {
-  pitch: number;
-  windowSize: number;
+  pitch: number; // in semitones
 }
 
 /**
@@ -16,7 +15,9 @@ export class PitchShiftModule extends AudioModule<PitchShiftModuleParams> {
   constructor(params?: Partial<PitchShiftModuleParams>, config?: AudioModuleConfig) {
     const pitchShift = new Tone.PitchShift({
       pitch: params?.pitch ?? 0,
-      windowSize: params?.windowSize ?? 0.1,
+      windowSize: 0.03,
+      delayTime: 0,
+      feedback: 0,
     });
 
     super(pitchShift, config);
@@ -24,7 +25,6 @@ export class PitchShiftModule extends AudioModule<PitchShiftModuleParams> {
 
     this._currentParams = {
       pitch: params?.pitch ?? 0,
-      windowSize: params?.windowSize ?? 0.1,
     };
   }
 
@@ -39,16 +39,9 @@ export class PitchShiftModule extends AudioModule<PitchShiftModuleParams> {
 
   updateParam(param: keyof PitchShiftModuleParams, value: number): void {
     this._currentParams[param] = value;
-
-    if (this._isBypassed) return;
-
-    switch (param) {
-      case "pitch":
-        this.pitchShift.pitch = value;
-        break;
-      case "windowSize":
-        this.pitchShift.windowSize = value;
-        break;
+    
+    if (param === "pitch") {
+      this.pitchShift.pitch = value;
     }
   }
 
@@ -56,13 +49,17 @@ export class PitchShiftModule extends AudioModule<PitchShiftModuleParams> {
     this._isActive = state.isActive;
     this._currentParams = {
       pitch: state.pitch,
-      windowSize: state.windowSize,
     };
 
     if (state.isActive) {
-      this.updateParams(this._currentParams);
+      this.pitchShift.pitch = state.pitch;
     } else {
       this.bypass(true);
     }
+  }
+
+  dispose(): void {
+    this.pitchShift.dispose();
+    super.dispose();
   }
 }

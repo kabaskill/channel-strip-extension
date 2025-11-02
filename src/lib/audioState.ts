@@ -45,13 +45,7 @@ export const gateDefaults = {
   smoothing: { label: "Smoothing", prefix: "", min: 0, max: 1, step: 0.01 },
 };
 
-// LIMITER DEFAULTS
-export const limiterDefaults = {
-  threshold: { label: "Threshold", prefix: "dB", min: -20, max: 0, step: 1 },
-};
-
 // PITCH SHIFT DEFAULTS
 export const pitchShiftDefaults = {
-  pitch: { label: "Pitch", prefix: " semitones", min: -12, max: 12, step: 1 },
-  windowSize: { label: "Window", prefix: "s", min: 0.03, max: 0.5, step: 0.01 },
+  pitch: { label: "Pitch", prefix: " st", min: -12, max: 12, step: 0.1 },
 };

@@ -1,15 +1,15 @@
 import { useAudioStore } from "@/lib/store";
 import { volumeDefaults, gainDefaults } from "@/lib/audioState";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import Fader from "@/components/Fader";
 import Knob from "./components/ui/Knob";
+import Meter from "./components/ui/Meter";
 import Compressor from "./components/Compressor";
 import EQ from "./components/EQ";
 import Gate from "./components/Gate";
-import Limiter from "./components/Limiter";
 import PitchShift from "./components/PitchShift";
 import Mono from "./components/Mono";
 import { Button } from "./components/ui/button";
+import { useMeterValues } from "./hooks/useMeterValues";
 
 export default function App() {
   const volume = useAudioStore((state) => state.volume);
@@ -20,8 +20,10 @@ export default function App() {
   const setGain = useAudioStore((state) => state.setGain);
   const toggleGain = useAudioStore((state) => state.toggleGain);
 
+  const { meters, isConnected } = useMeterValues();
+
   return (
-    <div className="max-w-fit min-h-[400px] bg-slate-900 text-white flex flex-col">
+    <div className="w-[800px] bg-slate-900 text-white flex flex-col">
       {/* Header */}
       <div className="px-6 py-4 border-b border-slate-700">
         <h1 className="text-2xl font-bold tracking-tight text-center">
@@ -30,7 +32,7 @@ export default function App() {
       </div>
 
       {/* Main Content - 3 Column Grid */}
-      <div className="flex-1 grid grid-cols-[auto_1fr] gap-4 p-4 overflow-hidden">
+      <div className="flex-1 grid grid-cols-[1fr_auto_auto] gap-4 p-4 overflow-hidden">
         {/* Column 1: Tab Navigation */}
         <Tabs defaultValue="eq" className="flex gap-4" orientation="vertical">
           <TabsList className="flex flex-col h-fit gap-2 bg-slate-800/50 p-2">
@@ -51,12 +53,6 @@ export default function App() {
               className="justify-start w-full data-[state=active]:bg-slate-700"
             >
               Gate
-            </TabsTrigger>
-            <TabsTrigger 
-              value="limiter"
-              className="justify-start w-full data-[state=active]:bg-slate-700"
-            >
-              Limiter
             </TabsTrigger>
             <TabsTrigger 
               value="pitchShift"
@@ -89,14 +85,6 @@ export default function App() {
               <Compressor />
             </TabsContent>
 
-
-            <TabsContent 
-              value="limiter" 
-              className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
-            >
-              <Limiter />
-            </TabsContent>
-
             <TabsContent 
               value="pitchShift" 
               className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
@@ -106,6 +94,27 @@ export default function App() {
 
           </div>
         </Tabs>
+
+        {/* Column 2: Meters */}
+        <div className="relative flex gap-4 bg-slate-800/30 rounded-lg p-4 border border-slate-700">
+          <Meter
+            getValue={() => meters.input}
+            label="IN"
+            orientation="vertical"
+            className="flex-1"
+          />
+          <Meter
+            getValue={() => meters.output}
+            label="OUT"
+            orientation="vertical"
+            className="flex-1"
+          />
+          {!isConnected && (
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 rounded-lg">
+              <p className="text-xs text-slate-500">No Audio</p>
+            </div>
+          )}
+        </div>
 
         {/* Column 3: Master Controls (Gain & Volume) */}
         <div className="flex flex-col gap-6 min-w-[160px] bg-slate-800/30 rounded-lg p-4 border border-slate-700">

@@ -5,11 +5,10 @@ import { EQModule } from "./modules/EQModule";
 import { CompressorModule } from "./modules/CompressorModule";
 import { GainModule } from "./modules/GainModule";
 import { GateModule } from "./modules/GateModule";
-import { LimiterModule } from "./modules/LimiterModule";
 import { PitchShiftModule } from "./modules/PitchShiftModule";
 import { MonoModule } from "./modules/MonoModule";
 
-export type ModuleName = "eq" | "compressor" | "gain" | "gate" | "limiter" | "pitchShift" | "mono";
+export type ModuleName = "eq" | "compressor" | "gain" | "gate" | "pitchShift" | "mono";
 
 /**
  * AudioChain manages the entire audio processing chain
@@ -29,7 +28,6 @@ export class AudioChain {
     "compressor",
     "pitchShift",
     "gain",
-    "limiter",
     "mono",
   ];
 
@@ -49,8 +47,18 @@ export class AudioChain {
     try {
       this.mediaElement = mediaElement;
 
+      // Start Tone.js audio context (must be called after user gesture)
+      await Tone.start();
+      console.log("Tone.js audio context started");
+
       // Get Tone's audio context
       const audioContext = Tone.getContext().rawContext as AudioContext;
+
+      // Resume the context if it's suspended
+      if (audioContext.state === "suspended") {
+        await audioContext.resume();
+        console.log("AudioContext resumed");
+      }
 
       // Create MediaElementSource
       this.source = audioContext.createMediaElementSource(mediaElement);
@@ -101,13 +109,8 @@ export class AudioChain {
       smoothing: 0.1,
     }, { isActive: false })); // Disabled by default
 
-    this.modules.set("limiter", new LimiterModule({
-      threshold: -3,
-    }, { isActive: false })); // Disabled by default
-
     this.modules.set("pitchShift", new PitchShiftModule({
       pitch: 0,
-      windowSize: 0.1,
     }, { isActive: false })); // Disabled by default
 
     this.modules.set("mono", new MonoModule({ isActive: false })); // Disabled by default
@@ -119,7 +122,7 @@ export class AudioChain {
 
   /**
    * Reconnect the entire audio chain
-   * Rebuilds connections in the correct order
+   * Rebuilds connections in the correct order, skipping inactive modules
    */
   private reconnect(): void {
     if (!this.source) return;
@@ -136,12 +139,18 @@ export class AudioChain {
       inputMeter.connect(this.source);
     }
 
-    // Connect modules in order
+    // Connect modules in order, skipping inactive ones for true bypass
     for (const moduleName of this.chainOrder) {
       const module = this.modules.get(moduleName);
       if (module) {
-        Tone.connect(previousNode, module.node);
-        previousNode = module.node;
+        // For mono, skip if inactive for true bypass
+        // For other modules, include them (they handle bypass internally)
+        const shouldSkip = !module.isActive && moduleName === "mono";
+        
+        if (!shouldSkip) {
+          Tone.connect(previousNode, module.node);
+          previousNode = module.node;
+        }
       }
     }
 
@@ -172,6 +181,22 @@ export class AudioChain {
   }
 
   /**
+   * Get input meter value in dB
+   */
+  getInputLevel(): number {
+    const meter = this.meters.get("input");
+    return meter ? meter.getValue() : -60;
+  }
+
+  /**
+   * Get output meter value in dB
+   */
+  getOutputLevel(): number {
+    const meter = this.meters.get("output");
+    return meter ? meter.getValue() : -60;
+  }
+
+  /**
    * Update a module parameter
    */
   updateModuleParam(moduleName: ModuleName, param: string, value: number): void {
@@ -188,6 +213,10 @@ export class AudioChain {
     const module = this.modules.get(moduleName);
     if (module) {
       module.setActive(isActive);
+      // For modules that can't truly bypass (Mono), reconnect the chain
+      if (moduleName === "mono") {
+        this.reconnect();
+      }
     }
   }
 
@@ -230,14 +259,6 @@ export class AudioChain {
       const gateModule = this.modules.get("gate");
       if (gateModule) {
         gateModule.applyState(state.gate as never);
-      }
-    }
-
-    // Apply Limiter
-    if (state.limiter) {
-      const limiterModule = this.modules.get("limiter");
-      if (limiterModule) {
-        limiterModule.applyState(state.limiter as never);
       }
     }
 

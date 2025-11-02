@@ -26,7 +26,7 @@ export default function Knob({
   gaugeSecondaryColor = "#1e293b", // slate-800
   className,
   onChange,
-  sensitivity = 0.4,
+  sensitivity = 1,
 }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -41,14 +41,11 @@ export default function Knob({
   const arcLength = circumference * 0.75;
   const currentPercent = ((value - min) / (max - min)) * 100;
   const progressLength = (currentPercent / 100) * arcLength;
-  
-  // Calculate rotation angle for the indicator (270 degrees total arc, starting at -135)
-  // const indicatorAngle = -135 + (currentPercent / 100) * 270;
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent | React.TouchEvent) => {
       if (!isActive) return; // Don't allow interaction when disabled
-      
+
       setIsDragging(true);
       setStartY("touches" in e ? e.touches[0].clientY : e.clientY);
       setStartX("touches" in e ? e.touches[0].clientX : e.clientX);
@@ -65,17 +62,26 @@ export default function Knob({
 
       const currentY = "touches" in e ? e.touches[0].clientY : e.clientY;
       const currentX = "touches" in e ? e.touches[0].clientX : e.clientX;
-      const deltaY = (startY - currentY) * sensitivity;
-      const deltaX = (startX - currentX) * -sensitivity;
+      const deltaY = startY - currentY;
+      const deltaX = (startX - currentX) * -1;
       const positiveMovement = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
       const valueRange = max - min;
-      // const newValue = Math.min(Math.max(startValue + (deltaY / 100) * valueRange, min), max);
-      const newValue = Math.min(
-        Math.max(startValue + Math.round(positiveMovement / valueRange) * step, min),
-        max
-      );
 
-      onChange?.(Math.round(newValue));
+      // Auto-adjust sensitivity based on range
+      // Smaller ranges need less sensitivity, larger ranges need more
+      const autoSensitivity = sensitivity * (valueRange / 100);
+      
+      // Calculate new value based on pixel movement (1 pixel = autoSensitivity units)
+      const rawValue = startValue + (positiveMovement * autoSensitivity);
+
+      // Round to nearest step
+      const steppedValue = Math.round(rawValue / step) * step;
+
+      // Clamp to min/max and fix floating point precision
+      const clampedValue = Math.min(Math.max(steppedValue, min), max);
+      const finalValue = parseFloat(clampedValue.toFixed(10));
+
+      onChange?.(finalValue);
       e.preventDefault();
     },
     [isDragging, startX, startY, startValue, min, max, step, onChange, sensitivity]
@@ -171,25 +177,6 @@ export default function Knob({
             }}
           />
         </g>
-
-        {/* Rotating indicator dot group */}
-        {/* 
-        <g 
-          transform={`rotate(${indicatorAngle} 50 50)`}
-          className="transition-transform duration-500"
-        >
-          <circle
-            cx="50"
-            cy="5"
-            r="3"
-            fill={isActive ? gaugePrimaryColor : gaugeSecondaryColor}
-            className="transition-colors duration-200"
-            style={{
-              filter: isDragging ? "brightness(1.5)" : "brightness(1)",
-            }}
-          />
-        </g>
-        */}
       </svg>
 
       <div
@@ -202,7 +189,7 @@ export default function Knob({
           "text-lg font-bold",
           isActive ? "text-white" : "text-slate-500"
         )}>
-          {value}{prefix}
+          {step < 1 ? value.toFixed(2) : Math.round(value)}{prefix}
         </span>
         <span className={cn(
           "text-[10px] uppercase tracking-wider mt-1",

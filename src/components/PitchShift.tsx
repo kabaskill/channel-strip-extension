@@ -26,7 +26,7 @@ export default function PitchShift() {
       {/* Pitch Shift Controls */}
       <div
         className={cn(
-          "flex-1 grid grid-cols-2 gap-4",
+          "flex-1 flex items-center justify-center",
           !pitchShift.isActive && "opacity-40 pointer-events-none"
         )}
       >
@@ -37,18 +37,8 @@ export default function PitchShift() {
             isActive={pitchShift.isActive}
             defaults={pitchShiftDefaults.pitch}
             onChange={(value: number) => updatePitchShift("pitch", value)}
-            sensitivity={1}
-          />
-        </div>
-
-        {/* Window Size */}
-        <div className="flex flex-col items-center justify-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-600/50">
-          <Knob
-            value={pitchShift.windowSize}
-            isActive={pitchShift.isActive}
-            defaults={pitchShiftDefaults.windowSize}
-            onChange={(value: number) => updatePitchShift("windowSize", value)}
-            sensitivity={0.01}
+            sensitivity={0.3}
+            className="w-32 h-32"
           />
         </div>
       </div>

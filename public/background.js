@@ -1,3 +1,3 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("Volume Booster installed");
+  console.log("Channel Strip installed");
 });

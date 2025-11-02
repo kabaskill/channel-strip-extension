@@ -37,7 +37,7 @@ export default function Gate() {
             isActive={gate.isActive}
             defaults={gateDefaults.threshold}
             onChange={(value: number) => updateGate("threshold", value)}
-            sensitivity={10}
+            sensitivity={0.5}
           />
         </div>
 

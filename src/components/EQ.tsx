@@ -37,7 +37,7 @@ export default function EQ() {
             isActive={eq.isActive}
             defaults={eqDefaults.low}
             onChange={(value: number) => updateEQ("low", value)}
-            sensitivity={1}
+            sensitivity={0.3}
           />
           <div className="text-xs text-center mt-2">
             <Knob
@@ -45,7 +45,7 @@ export default function EQ() {
               isActive={eq.isActive}
               defaults={eqDefaults.lowFreq}
               onChange={(value: number) => updateEQ("lowFreq", value)}
-              sensitivity={10}
+              sensitivity={0.5}
             />
           </div>
         </div>
@@ -57,7 +57,7 @@ export default function EQ() {
             isActive={eq.isActive}
             defaults={eqDefaults.mid}
             onChange={(value: number) => updateEQ("mid", value)}
-            sensitivity={1}
+            sensitivity={0.3}
           />
           <div className="text-xs text-center mt-2">
             <Knob
@@ -65,7 +65,7 @@ export default function EQ() {
               isActive={eq.isActive}
               defaults={eqDefaults.midFreq}
               onChange={(value: number) => updateEQ("midFreq", value)}
-              sensitivity={100}
+              sensitivity={0.5}
             />
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function EQ() {
             isActive={eq.isActive}
             defaults={eqDefaults.high}
             onChange={(value: number) => updateEQ("high", value)}
-            sensitivity={1}
+            sensitivity={0.3}
           />
           <div className="text-xs text-center mt-2">
             <Knob
@@ -85,7 +85,7 @@ export default function EQ() {
               isActive={eq.isActive}
               defaults={eqDefaults.highFreq}
               onChange={(value: number) => updateEQ("highFreq", value)}
-              sensitivity={500}
+              sensitivity={0.5}
             />
           </div>
         </div>

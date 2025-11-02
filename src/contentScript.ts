@@ -30,6 +30,7 @@ async function initializeAudio(): Promise<boolean> {
       const success = await audioChain.initialize(mediaElement);
 
       if (success) {
+        console.log("Audio chain initialized successfully");
         // Load saved settings
         chrome.storage.local.get(["audio-expert-storage"], (result) => {
           if (result["audio-expert-storage"]) {
@@ -57,6 +58,7 @@ async function initializeAudio(): Promise<boolean> {
 
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  // Initialize audio if needed
   initializeAudio().then(() => {
     if (!audioChain) {
       sendResponse({ success: false, error: "Audio chain not initialized" });
@@ -65,6 +67,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
     try {
       switch (message.type) {
+        // Get meter values
+        case "GET_METERS":
+          sendResponse({
+            success: true,
+            meters: {
+              input: audioChain.getInputLevel(),
+              output: audioChain.getOutputLevel(),
+            },
+          });
+          return true;
+
         // Volume controls
         case "SET_VOLUME":
           audioChain.setVolume(message.payload);
@@ -116,14 +129,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           audioChain.toggleModule("gate", message.payload);
           break;
 
-        // Limiter controls
-        case "SET_LIMITER":
-          audioChain.updateModuleParam("limiter", message.payload.param, message.payload.value);
-          break;
-        case "TOGGLE_LIMITER":
-          audioChain.toggleModule("limiter", message.payload);
-          break;
-
         // PitchShift controls
         case "SET_PITCH_SHIFT":
           audioChain.updateModuleParam("pitchShift", message.payload.param, message.payload.value);
@@ -145,35 +150,18 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           initializeAudio();
           break;
 
-        default:
-          console.warn("Unknown message type:", message.type);
-      }
-
-      sendResponse({ success: true });
-    } catch (error) {
-      console.error("Error handling message:", error);
-      sendResponse({ success: false, error: String(error) });
+      default:
+        console.warn("Unknown message type:", message.type);
     }
+
+    sendResponse({ success: true });
+  } catch (error) {
+    console.error("Error handling message:", error);
+    sendResponse({ success: false, error: String(error) });
+  }
   });
 
   return true; // Keep the message channel open for async response
 });
 
-// Auto-initialize when media element is detected
-const observer = new MutationObserver(() => {
-  if (!audioChain?.isInitialized && document.querySelector("video, audio")) {
-    initializeAudio();
-  }
-});
-
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-});
-
-// Also try to initialize immediately
-if (document.readyState === "complete") {
-  initializeAudio();
-} else {
-  window.addEventListener("load", initializeAudio);
-}
+console.log("Audio Expert content script loaded");

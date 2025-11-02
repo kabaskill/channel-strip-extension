@@ -6,7 +6,6 @@ import type {
   CompressorState, 
   EQState, 
   GateState, 
-  LimiterState, 
   PitchShiftState, 
   MonoState 
 } from "./types";
@@ -63,11 +62,6 @@ interface AudioStore {
   updateGate: (param: keyof Omit<GateState, "isActive">, value: number) => void;
   toggleGate: () => void;
 
-  // Limiter
-  limiter: LimiterState;
-  updateLimiter: (param: keyof Omit<LimiterState, "isActive">, value: number) => void;
-  toggleLimiter: () => void;
-
   // Pitch Shift
   pitchShift: PitchShiftState;
   updatePitchShift: (param: keyof Omit<PitchShiftState, "isActive">, value: number) => void;
@@ -107,14 +101,9 @@ const defaultGate: GateState = {
   threshold: -50,
   smoothing: 0.1,
 };
-const defaultLimiter: LimiterState = {
-  isActive: false,
-  threshold: -3,
-};
 const defaultPitchShift: PitchShiftState = {
   isActive: false,
   pitch: 0,
-  windowSize: 0.1,
 };
 const defaultMono: MonoState = {
   isActive: false,
@@ -204,20 +193,6 @@ export const useAudioStore = create<AudioStore>()(
         sendToContentScript("TOGGLE_GATE", newState);
       },
 
-      // Limiter state and actions
-      limiter: defaultLimiter,
-      updateLimiter: (param, value) => {
-        set({
-          limiter: { ...get().limiter, [param]: value },
-        });
-        sendToContentScript("SET_LIMITER", { param, value });
-      },
-      toggleLimiter: () => {
-        const newState = !get().limiter.isActive;
-        set({ limiter: { ...get().limiter, isActive: newState } });
-        sendToContentScript("TOGGLE_LIMITER", newState);
-      },
-
       // Pitch Shift state and actions
       pitchShift: defaultPitchShift,
       updatePitchShift: (param, value) => {
@@ -248,7 +223,6 @@ export const useAudioStore = create<AudioStore>()(
           compressor: defaultCompressor,
           eq: defaultEQ,
           gate: defaultGate,
-          limiter: defaultLimiter,
           pitchShift: defaultPitchShift,
           mono: defaultMono,
         });
@@ -268,6 +242,5 @@ export const selectGain = (state: AudioStore) => state.gain;
 export const selectCompressor = (state: AudioStore) => state.compressor;
 export const selectEQ = (state: AudioStore) => state.eq;
 export const selectGate = (state: AudioStore) => state.gate;
-export const selectLimiter = (state: AudioStore) => state.limiter;
 export const selectPitchShift = (state: AudioStore) => state.pitchShift;
 export const selectMono = (state: AudioStore) => state.mono;

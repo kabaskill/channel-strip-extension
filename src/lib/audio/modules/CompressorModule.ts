@@ -39,17 +39,22 @@ export class CompressorModule extends AudioModule<CompressorModuleParams> {
   bypass(shouldBypass: boolean): void {
     this._isBypassed = shouldBypass;
     if (shouldBypass) {
-      // Set threshold to 0 to effectively bypass
-      this.compressor.threshold.rampTo(0, 0.05);
+      // Set ratio to 1:1 to effectively bypass compression
+      this.compressor.ratio.rampTo(1, 0.05);
     } else {
+      // Restore all parameters when re-enabling
       this.compressor.threshold.rampTo(this._currentParams.threshold, 0.05);
+      this.compressor.knee.rampTo(this._currentParams.knee, 0.05);
+      this.compressor.ratio.rampTo(this._currentParams.ratio, 0.05);
+      this.compressor.attack.rampTo(this._currentParams.attack / 1000, 0.05);
+      this.compressor.release.rampTo(this._currentParams.release / 1000, 0.05);
     }
   }
 
   updateParam(param: keyof CompressorModuleParams, value: number): void {
     this._currentParams[param] = value;
 
-    if (this._isBypassed && param !== "threshold") return;
+    if (this._isBypassed) return;
 
     switch (param) {
       case "threshold":

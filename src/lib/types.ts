@@ -2,6 +2,7 @@
 
 // Common message types used across the extension
 export type MessageType =
+  | "GET_METERS"
   | "SET_VOLUME"
   | "TOGGLE_VOLUME"
   | "SET_GAIN"
@@ -12,19 +13,16 @@ export type MessageType =
   | "TOGGLE_EQ"
   | "SET_GATE"
   | "TOGGLE_GATE"
-  | "SET_LIMITER"
-  | "TOGGLE_LIMITER"
   | "SET_PITCH_SHIFT"
   | "TOGGLE_PITCH_SHIFT"
   | "TOGGLE_MONO"
   | "RESET_ALL";
 
-export type ModuleType = "volume" | "gain" | "compressor" | "eq" | "gate" | "limiter" | "pitchShift" | "mono";
+export type ModuleType = "volume" | "gain" | "compressor" | "eq" | "gate" | "pitchShift" | "mono";
 export type CompressorParam = "threshold" | "knee" | "ratio" | "attack" | "release";
 export type EQParam = "low" | "mid" | "high" | "lowFreq" | "midFreq" | "highFreq";
 export type GateParam = "threshold" | "smoothing";
-export type LimiterParam = "threshold";
-export type PitchShiftParam = "pitch" | "windowSize";
+export type PitchShiftParam = "pitch";
 
 // Core state interfaces
 export interface VolumeState {
@@ -63,15 +61,9 @@ export interface GateState {
   smoothing: number;
 }
 
-export interface LimiterState {
-  isActive: boolean;
-  threshold: number;
-}
-
 export interface PitchShiftState {
   isActive: boolean;
   pitch: number;
-  windowSize: number;
 }
 
 export interface MonoState {
@@ -91,7 +83,6 @@ export type MessagePayload =
   | { param: CompressorParam; value: number }
   | { param: EQParam; value: number }
   | { param: GateParam; value: number }
-  | { param: LimiterParam; value: number }
   | { param: PitchShiftParam; value: number }
   | null;
 
