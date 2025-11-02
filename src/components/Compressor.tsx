@@ -1,83 +1,70 @@
-import { audioActions, compressorDefaults, compressorState } from "@/lib/audioState";
-import { cn } from "@/lib/utils";
+import { useAudioStore } from "@/lib/store";
+import { compressorDefaults } from "@/lib/audioState";
 import Knob from "./ui/Knob";
-import { useSignals } from "@preact/signals-react/runtime";
-import Fader from "./Fader";
+import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 export default function Compressor() {
-  useSignals();
+  const compressor = useAudioStore((state) => state.compressor);
+  const updateCompressor = useAudioStore((state) => state.updateCompressor);
+  const toggleCompressor = useAudioStore((state) => state.toggleCompressor);
+
   return (
     <>
-      <button
-        type="button"
-        className={cn(
-          "px-4 py-2 rounded-md",
-          "bg-white text-black border-2 border-gray-300",
-          "font-medium text-sm",
-          "transition-colors duration-200",
-          "hover:bg-gray-50 active:bg-gray-100",
-          "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        )}
-        onClick={() => audioActions.toggleModule("compressor")}
-      >
-        Comp Enable
-      </button>
+      <Button variant={"outline"} onClick={toggleCompressor}>
+        {compressor.isActive ? "Disable" : "Enable"} Compressor
+      </Button>
 
-      <div className="grid grid-cols-[1fr_3fr_1fr] bg-orange-400">
+      <div
+        className={cn(
+          " grid grid-cols-[1fr_3fr_1fr] gap-8 p-2",
+          compressor.isActive ? "opacity-100" : "opacity-50"
+        )}
+      >
         <div>
           <Knob
-            value={compressorState.value.threshold}
-            isActive={compressorState.value.isActive}
+            value={compressor.threshold}
+            isActive={compressor.isActive}
             defaults={compressorDefaults.threshold}
-            onChange={(value: number) => audioActions.updateCompressor("threshold", value)}
-            gaugePrimaryColor="green"
-            gaugeSecondaryColor="gray"
+            onChange={(value: number) => updateCompressor("threshold", value)}
             sensitivity={10}
           />
         </div>
 
-        <div className="grid grid-cols-2 grid-rows-2">
+        <div className="grid grid-cols-2 grid-rows-2 gap-8">
           <Knob
-            value={compressorState.value.knee}
-            isActive={compressorState.value.isActive}
+            value={compressor.knee}
+            isActive={compressor.isActive}
             defaults={compressorDefaults.knee}
-            onChange={(value: number) => audioActions.updateCompressor("knee", value)}
-            gaugePrimaryColor="green"
-            gaugeSecondaryColor="gray"
+            onChange={(value: number) => updateCompressor("knee", value)}
             sensitivity={1}
           />
           <Knob
-            value={compressorState.value.ratio}
-            isActive={compressorState.value.isActive}
+            value={compressor.ratio}
+            isActive={compressor.isActive}
             defaults={compressorDefaults.ratio}
-            onChange={(value: number) => audioActions.updateCompressor("ratio", value)}
-            gaugePrimaryColor="green"
-            gaugeSecondaryColor="gray"
+            onChange={(value: number) => updateCompressor("ratio", value)}
             sensitivity={1}
           />
           <Knob
-            value={compressorState.value.attack}
-            isActive={compressorState.value.isActive}
+            value={compressor.attack}
+            isActive={compressor.isActive}
             defaults={compressorDefaults.attack}
-            onChange={(value: number) => audioActions.updateCompressor("attack", value)}
-            gaugePrimaryColor="green"
-            gaugeSecondaryColor="gray"
-            sensitivity={1}
+            onChange={(value: number) => updateCompressor("attack", value)}
+            sensitivity={1000}
           />
           <Knob
-            value={compressorState.value.release}
-            isActive={compressorState.value.isActive}
+            value={compressor.release}
+            isActive={compressor.isActive}
             defaults={compressorDefaults.release}
-            onChange={(value: number) => audioActions.updateCompressor("release", value)}
-            gaugePrimaryColor="green"
-            gaugeSecondaryColor="gray"
-            sensitivity={1}
+            onChange={(value: number) => updateCompressor("release", value)}
+            sensitivity={1000}
           />
         </div>
 
         <div className="bg-white text-black text-center">
           {compressorDefaults.reduction.label} <br />
-          {compressorState.value.reduction}dB
+          {compressor.reduction}dB
         </div>
       </div>
     </>

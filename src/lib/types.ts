@@ -1,9 +1,20 @@
 // types.ts
 
 // Common message types used across the extension
-export type MessageType = "SET_VOLUME" | "SET_GAIN" | "SET_COMP" | "SET_MODULE_ACTIVE";
-export type ModuleType = "volume" | "gain" | "compressor";
+export type MessageType =
+  | "SET_VOLUME"
+  | "TOGGLE_VOLUME"
+  | "SET_GAIN"
+  | "TOGGLE_GAIN"
+  | "SET_COMPRESSOR"
+  | "TOGGLE_COMPRESSOR"
+  | "SET_EQ"
+  | "TOGGLE_EQ"
+  | "RESET_ALL";
+
+export type ModuleType = "volume" | "gain" | "compressor" | "eq";
 export type CompressorParam = "threshold" | "knee" | "ratio" | "attack" | "release";
+export type EQParam = "low" | "mid" | "high" | "lowFreq" | "midFreq" | "highFreq";
 
 // Core interfaces
 export interface AudioState {
@@ -21,18 +32,26 @@ export interface CompressorState {
   reduction: number;
 }
 
+export interface EQState {
+  isActive: boolean;
+  low: number;
+  mid: number;
+  high: number;
+  lowFreq: number;
+  midFreq: number;
+  highFreq: number;
+}
+
+// Message payload types
+export type MessagePayload =
+  | number
+  | boolean
+  | { param: CompressorParam; value: number }
+  | { param: EQParam; value: number }
+  | null;
+
 // Simplified message types
 export type Message = {
   type: MessageType;
-  payload: number | boolean | { param: CompressorParam; value: number };
+  payload: MessagePayload;
 };
-
-
-// Audio action types
-export interface AudioActions {
-  setVolume: (value: number) => void;
-  setGain: (value: number) => void;
-  updateCompressor: (param: CompressorParam, value: number) => void;
-  toggleModule: (module: ModuleType) => void;
-  initializeFromStorage: () => Promise<void>;
-}

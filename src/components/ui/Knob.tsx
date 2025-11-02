@@ -11,8 +11,8 @@ interface Props {
     label: string;
     prefix?: string;
   };
-  gaugePrimaryColor: string;
-  gaugeSecondaryColor: string;
+  gaugePrimaryColor?: string;
+  gaugeSecondaryColor?: string;
   className?: string;
   onChange?: (newValue: number) => void;
   sensitivity?: number;
@@ -21,14 +21,16 @@ interface Props {
 export default function Knob({
   defaults,
   value,
-  gaugePrimaryColor,
-  gaugeSecondaryColor,
+  isActive,
+  gaugePrimaryColor = "hsl(var(--chart-1))",
+  gaugeSecondaryColor = "hsl(var(--ring))",
   className,
   onChange,
   sensitivity = 0.4,
 }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
+  const [startX, setStartX] = useState(0);
   const [startValue, setStartValue] = useState(value);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -44,6 +46,7 @@ export default function Knob({
     (e: React.MouseEvent | React.TouchEvent) => {
       setIsDragging(true);
       setStartY("touches" in e ? e.touches[0].clientY : e.clientY);
+      setStartX("touches" in e ? e.touches[0].clientX : e.clientX);
       setStartValue(value);
       document.body.style.cursor = "ns-resize";
     },
@@ -55,18 +58,21 @@ export default function Knob({
       if (!isDragging) return;
 
       const currentY = "touches" in e ? e.touches[0].clientY : e.clientY;
+      const currentX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const deltaY = (startY - currentY) * sensitivity;
+      const deltaX = (startX - currentX) * -sensitivity;
+      const positiveMovement = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
       const valueRange = max - min;
       // const newValue = Math.min(Math.max(startValue + (deltaY / 100) * valueRange, min), max);
       const newValue = Math.min(
-        Math.max(startValue + Math.round(deltaY / valueRange) * step, min),
+        Math.max(startValue + Math.round(positiveMovement / valueRange) * step, min),
         max
       );
 
       onChange?.(Math.round(newValue));
       e.preventDefault();
     },
-    [isDragging, startY, startValue, min, max, step, onChange, sensitivity]
+    [isDragging, startX, startY, startValue, min, max, step, onChange, sensitivity]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -96,6 +102,7 @@ export default function Knob({
         "relative font-semibold transition-transform duration-150",
         isHovered && !isDragging && "scale-105",
         isDragging && "scale-110",
+        isActive ? "opacity-100" : "opacity-50",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}

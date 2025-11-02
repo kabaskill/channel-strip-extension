@@ -3,7 +3,7 @@
   "name": "Channel Strip",
   "version": "0.1",
   "description": "Manipulate the audio of any website like a boss",
-  "permissions": ["activeTab", "scripting", "tabs", "storage", "unlimitedStorage"],
+  "permissions": ["activeTab", "scripting", "tabs", "storage"],
   "host_permissions": ["*://*/*"],
   "action": {
     "default_popup": "index.html",
@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["*://*/*"],
-      "js": ["contentScript.ts"]
+      "js": ["contentScript.js"]
     }
   ]
 }
