@@ -1,6 +1,7 @@
 import { useAudioStore } from "@/lib/store";
 import { Button } from "./ui/button";
 import Knob from "./ui/Knob";
+import { limiterDefaults } from "@/lib/audioState";
 
 export default function Limiter() {
   const limiter = useAudioStore((state) => state.limiter);

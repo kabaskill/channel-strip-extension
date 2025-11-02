@@ -44,10 +44,10 @@ export default function PitchShift() {
         {/* Window Size */}
         <div className="flex flex-col items-center justify-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-600/50">
           <Knob
-            value={pitchshift.windowsize}
-            isactive={pitchshift.isactive}
-            defaults={pitchshiftdefaults.windowsize}
-            onchange={(value: number) => updatepitchshift("windowsize", value)}
+            value={pitchShift.windowSize}
+            isActive={pitchShift.isActive}
+            defaults={pitchShiftDefaults.windowSize}
+            onChange={(value: number) => updatePitchShift("windowSize", value)}
             sensitivity={0.01}
           />
         </div>
