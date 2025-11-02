@@ -10,11 +10,21 @@ export type MessageType =
   | "TOGGLE_COMPRESSOR"
   | "SET_EQ"
   | "TOGGLE_EQ"
+  | "SET_GATE"
+  | "TOGGLE_GATE"
+  | "SET_LIMITER"
+  | "TOGGLE_LIMITER"
+  | "SET_PITCH_SHIFT"
+  | "TOGGLE_PITCH_SHIFT"
+  | "TOGGLE_MONO"
   | "RESET_ALL";
 
-export type ModuleType = "volume" | "gain" | "compressor" | "eq";
+export type ModuleType = "volume" | "gain" | "compressor" | "eq" | "gate" | "limiter" | "pitchShift" | "mono";
 export type CompressorParam = "threshold" | "knee" | "ratio" | "attack" | "release";
 export type EQParam = "low" | "mid" | "high" | "lowFreq" | "midFreq" | "highFreq";
+export type GateParam = "threshold" | "smoothing";
+export type LimiterParam = "threshold";
+export type PitchShiftParam = "pitch" | "windowSize";
 
 // Core state interfaces
 export interface VolumeState {
@@ -47,6 +57,27 @@ export interface EQState {
   highFreq: number;
 }
 
+export interface GateState {
+  isActive: boolean;
+  threshold: number;
+  smoothing: number;
+}
+
+export interface LimiterState {
+  isActive: boolean;
+  threshold: number;
+}
+
+export interface PitchShiftState {
+  isActive: boolean;
+  pitch: number;
+  windowSize: number;
+}
+
+export interface MonoState {
+  isActive: boolean;
+}
+
 // Legacy - kept for backward compatibility
 export interface AudioState {
   isActive: boolean;
@@ -59,6 +90,9 @@ export type MessagePayload =
   | boolean
   | { param: CompressorParam; value: number }
   | { param: EQParam; value: number }
+  | { param: GateParam; value: number }
+  | { param: LimiterParam; value: number }
+  | { param: PitchShiftParam; value: number }
   | null;
 
 // Simplified message types

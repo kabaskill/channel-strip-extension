@@ -5,6 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Knob from "./components/ui/Knob";
 import Compressor from "./components/Compressor";
 import EQ from "./components/EQ";
+import Gate from "./components/Gate";
+import Limiter from "./components/Limiter";
+import PitchShift from "./components/PitchShift";
+import Mono from "./components/Mono";
 import { Button } from "./components/ui/button";
 
 export default function App() {
@@ -42,10 +46,41 @@ export default function App() {
             >
               Compressor
             </TabsTrigger>
+            <TabsTrigger 
+              value="gate"
+              className="justify-start w-full data-[state=active]:bg-slate-700"
+            >
+              Gate
+            </TabsTrigger>
+            <TabsTrigger 
+              value="limiter"
+              className="justify-start w-full data-[state=active]:bg-slate-700"
+            >
+              Limiter
+            </TabsTrigger>
+            <TabsTrigger 
+              value="pitchShift"
+              className="justify-start w-full data-[state=active]:bg-slate-700"
+            >
+              Pitch Shift
+            </TabsTrigger>
+            <TabsTrigger 
+              value="mono"
+              className="justify-start w-full data-[state=active]:bg-slate-700"
+            >
+              Mono
+            </TabsTrigger>
           </TabsList>
 
           {/* Column 2: Module Controls */}
           <div className="flex-1 min-w-0">
+            <TabsContent 
+              value="gate" 
+              className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
+            >
+              <Gate />
+            </TabsContent>
+            
             <TabsContent 
               value="eq" 
               className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
@@ -59,6 +94,22 @@ export default function App() {
             >
               <Compressor />
             </TabsContent>
+
+
+            <TabsContent 
+              value="limiter" 
+              className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
+            >
+              <Limiter />
+            </TabsContent>
+
+            <TabsContent 
+              value="pitchShift" 
+              className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
+            >
+              <PitchShift />
+            </TabsContent>
+
           </div>
         </Tabs>
 
@@ -87,6 +138,11 @@ export default function App() {
           </div>
 
           {/* Divider */}
+          <div className="border-t border-slate-700" />
+
+          {/* Mono Section */}
+          <Mono />
+
           <div className="border-t border-slate-700" />
 
           {/* Volume Section */}
