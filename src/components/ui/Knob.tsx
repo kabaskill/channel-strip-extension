@@ -22,7 +22,7 @@ export default function Knob({
   defaults,
   value,
   isActive,
-  gaugePrimaryColor = "#3b82f6", // blue-500
+  gaugePrimaryColor = "#8b5cf6", // violet-500
   gaugeSecondaryColor = "#1e293b", // slate-800
   className,
   onChange,
@@ -109,6 +109,7 @@ export default function Knob({
         isHovered && !isDragging && "scale-105",
         isDragging && "scale-110 drop-shadow-lg",
         !isActive && "opacity-40 cursor-not-allowed",
+        "size-24",
         className
       )}
       onMouseEnter={() => isActive && setIsHovered(true)}

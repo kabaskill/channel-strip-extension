@@ -1,6 +1,5 @@
 import { useAudioStore } from "@/lib/store";
 import { eqDefaults } from "@/lib/audioState";
-import { getKnobColors } from "@/lib/theme";
 import Knob from "./ui/Knob";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -39,9 +38,6 @@ export default function EQ() {
             defaults={eqDefaults.low}
             onChange={(value: number) => updateEQ("low", value)}
             sensitivity={1}
-            className="w-24 h-24"
-            gaugePrimaryColor={getKnobColors("eq-low").primary}
-            gaugeSecondaryColor={getKnobColors("eq-low").secondary}
           />
           <div className="text-xs text-center mt-2">
             <Knob
@@ -50,9 +46,6 @@ export default function EQ() {
               defaults={eqDefaults.lowFreq}
               onChange={(value: number) => updateEQ("lowFreq", value)}
               sensitivity={10}
-              className="w-24 h-24"
-              gaugePrimaryColor={getKnobColors("eq-low").primary}
-              gaugeSecondaryColor={getKnobColors("eq-low").secondary}
             />
           </div>
         </div>
@@ -65,9 +58,6 @@ export default function EQ() {
             defaults={eqDefaults.mid}
             onChange={(value: number) => updateEQ("mid", value)}
             sensitivity={1}
-            className="w-24 h-24"
-            gaugePrimaryColor={getKnobColors("eq-mid").primary}
-            gaugeSecondaryColor={getKnobColors("eq-mid").secondary}
           />
           <div className="text-xs text-center mt-2">
             <Knob
@@ -76,9 +66,6 @@ export default function EQ() {
               defaults={eqDefaults.midFreq}
               onChange={(value: number) => updateEQ("midFreq", value)}
               sensitivity={100}
-              className="w-24 h-24"
-              gaugePrimaryColor={getKnobColors("eq-mid").primary}
-              gaugeSecondaryColor={getKnobColors("eq-mid").secondary}
             />
           </div>
         </div>
@@ -91,9 +78,6 @@ export default function EQ() {
             defaults={eqDefaults.high}
             onChange={(value: number) => updateEQ("high", value)}
             sensitivity={1}
-            className="w-24 h-24"
-            gaugePrimaryColor={getKnobColors("eq-high").primary}
-            gaugeSecondaryColor={getKnobColors("eq-high").secondary}
           />
           <div className="text-xs text-center mt-2">
             <Knob
@@ -102,9 +86,6 @@ export default function EQ() {
               defaults={eqDefaults.highFreq}
               onChange={(value: number) => updateEQ("highFreq", value)}
               sensitivity={500}
-              className="w-24 h-24"
-              gaugePrimaryColor={getKnobColors("eq-high").primary}
-              gaugeSecondaryColor={getKnobColors("eq-high").secondary}
             />
           </div>
         </div>

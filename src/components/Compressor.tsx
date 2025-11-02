@@ -1,6 +1,5 @@
 import { useAudioStore } from "@/lib/store";
 import { compressorDefaults } from "@/lib/audioState";
-import { getKnobColors } from "@/lib/theme";
 import Knob from "./ui/Knob";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -9,8 +8,6 @@ export default function Compressor() {
   const compressor = useAudioStore((state) => state.compressor);
   const updateCompressor = useAudioStore((state) => state.updateCompressor);
   const toggleCompressor = useAudioStore((state) => state.toggleCompressor);
-
-  const compressorColors = getKnobColors("compressor");
 
   return (
     <div className="h-full flex flex-col gap-4 p-4 bg-slate-800/20 rounded-lg border border-slate-700">
@@ -42,8 +39,6 @@ export default function Compressor() {
             onChange={(value: number) => updateCompressor("threshold", value)}
             sensitivity={10}
             className="w-32 h-32"
-            gaugePrimaryColor={compressorColors.primary}
-            gaugeSecondaryColor={compressorColors.secondary}
           />
         </div>
 
@@ -56,9 +51,6 @@ export default function Compressor() {
               defaults={compressorDefaults.knee}
               onChange={(value: number) => updateCompressor("knee", value)}
               sensitivity={1}
-              className="w-24 h-24"
-              gaugePrimaryColor={compressorColors.primary}
-              gaugeSecondaryColor={compressorColors.secondary}
             />
           </div>
           <div className="flex flex-col items-center justify-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
@@ -68,9 +60,6 @@ export default function Compressor() {
               defaults={compressorDefaults.ratio}
               onChange={(value: number) => updateCompressor("ratio", value)}
               sensitivity={1}
-              className="w-24 h-24"
-              gaugePrimaryColor={compressorColors.primary}
-              gaugeSecondaryColor={compressorColors.secondary}
             />
           </div>
           <div className="flex flex-col items-center justify-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
@@ -80,9 +69,6 @@ export default function Compressor() {
               defaults={compressorDefaults.attack}
               onChange={(value: number) => updateCompressor("attack", value)}
               sensitivity={1000}
-              className="w-24 h-24"
-              gaugePrimaryColor={compressorColors.primary}
-              gaugeSecondaryColor={compressorColors.secondary}
             />
           </div>
           <div className="flex flex-col items-center justify-center p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
@@ -92,9 +78,6 @@ export default function Compressor() {
               defaults={compressorDefaults.release}
               onChange={(value: number) => updateCompressor("release", value)}
               sensitivity={1000}
-              className="w-24 h-24"
-              gaugePrimaryColor={compressorColors.primary}
-              gaugeSecondaryColor={compressorColors.secondary}
             />
           </div>
         </div>

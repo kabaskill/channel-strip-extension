@@ -1,8 +1,7 @@
 import { useAudioStore } from "@/lib/store";
 import { volumeDefaults, gainDefaults } from "@/lib/audioState";
-import { getKnobColors } from "@/lib/theme";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Fader from "@/components/Fader";
+// import Fader from "@/components/Fader";
 import Knob from "./components/ui/Knob";
 import Compressor from "./components/Compressor";
 import EQ from "./components/EQ";
@@ -17,10 +16,8 @@ export default function App() {
   const setGain = useAudioStore((state) => state.setGain);
   const toggleGain = useAudioStore((state) => state.toggleGain);
 
-  const gainColors = getKnobColors("gain");
-
   return (
-    <div className="max-w-fit min-h-[400px] bg-slate-900 text-white dark flex flex-col">
+    <div className="max-w-fit min-h-[400px] bg-slate-900 text-white flex flex-col">
       {/* Header */}
       <div className="px-6 py-4 border-b border-slate-700">
         <h1 className="text-2xl font-bold tracking-tight text-center">
@@ -66,7 +63,7 @@ export default function App() {
         </Tabs>
 
         {/* Column 3: Master Controls (Gain & Volume) */}
-        <div className="flex flex-col gap-6 min-w-[120px] bg-slate-800/30 rounded-lg p-4 border border-slate-700">
+        <div className="flex flex-col gap-6 min-w-[160px] bg-slate-800/30 rounded-lg p-4 border border-slate-700">
           {/* Gain Section */}
           <div className="flex flex-col items-center gap-4">
             <div className="w-full inline-flex items-center justify-between text-center">
@@ -86,8 +83,6 @@ export default function App() {
               onChange={setGain}
               sensitivity={0.4}
               className="w-24"
-              gaugePrimaryColor={gainColors.primary}
-              gaugeSecondaryColor={gainColors.secondary}
             />
           </div>
 
@@ -107,11 +102,19 @@ export default function App() {
               </Button>
             </div>
             <div className="flex-1 flex items-center justify-center">
-              <Fader
+              {/* <Fader */}
+              {/*   value={volume.value} */}
+              {/*   isActive={volume.isActive} */}
+              {/*   defaults={volumeDefaults} */}
+              {/*   onChange={setVolume} */}
+              {/* /> */}
+              <Knob
                 value={volume.value}
                 isActive={volume.isActive}
                 defaults={volumeDefaults}
                 onChange={setVolume}
+                sensitivity={10}
+                className="w-24"
               />
             </div>
           </div>
