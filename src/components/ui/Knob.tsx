@@ -22,8 +22,8 @@ export default function Knob({
   defaults,
   value,
   isActive,
-  gaugePrimaryColor = "hsl(var(--chart-1))",
-  gaugeSecondaryColor = "hsl(var(--ring))",
+  gaugePrimaryColor = "#3b82f6", // blue-500
+  gaugeSecondaryColor = "#1e293b", // slate-800
   className,
   onChange,
   sensitivity = 0.4,
@@ -41,16 +41,22 @@ export default function Knob({
   const arcLength = circumference * 0.75;
   const currentPercent = ((value - min) / (max - min)) * 100;
   const progressLength = (currentPercent / 100) * arcLength;
+  
+  // Calculate rotation angle for the indicator (270 degrees total arc, starting at -135)
+  // const indicatorAngle = -135 + (currentPercent / 100) * 270;
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent | React.TouchEvent) => {
+      if (!isActive) return; // Don't allow interaction when disabled
+      
       setIsDragging(true);
       setStartY("touches" in e ? e.touches[0].clientY : e.clientY);
       setStartX("touches" in e ? e.touches[0].clientX : e.clientX);
       setStartValue(value);
       document.body.style.cursor = "ns-resize";
+      e.stopPropagation(); // Prevent event bubbling
     },
-    [value]
+    [value, isActive]
   );
 
   const handleMouseMove = useCallback(
@@ -99,65 +105,110 @@ export default function Knob({
   return (
     <div
       className={cn(
-        "relative font-semibold transition-transform duration-150",
+        "relative font-semibold transition-all duration-200",
         isHovered && !isDragging && "scale-105",
-        isDragging && "scale-110",
-        isActive ? "opacity-100" : "opacity-50",
+        isDragging && "scale-110 drop-shadow-lg",
+        !isActive && "opacity-40 cursor-not-allowed",
         className
       )}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => isActive && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onMouseDown={handleMouseDown}
       onTouchStart={handleMouseDown}
       style={{
         transform: "translateZ(0)",
-        cursor: isDragging ? "ns-resize" : "grab",
+        cursor: isActive ? (isDragging ? "ns-resize" : "grab") : "not-allowed",
       }}
     >
-      <svg fill="none" className={cn("size-full -rotate-[135deg]")} viewBox="0 0 100 100">
-        {/* Background Track */}
-        <path
-          d="M50 5 A 45 45 0 1 1 50 95 A 45 45 0 0 1 50 5"
-          strokeWidth="10"
-          strokeLinecap="round"
-          className={cn(
-            "opacity-80",
-            !isDragging && "transition-all duration-200",
-            isHovered && "opacity-100"
-          )}
-          style={{
-            stroke: gaugeSecondaryColor,
-            strokeDasharray: `${arcLength} ${circumference}`,
-            // strokeDashoffset: arcLength / 4,
-          }}
-        />
+      <svg fill="none" className={cn("size-full pointer-events-none")} viewBox="0 0 100 100">
+        {/* Outer glow when active */}
+        {isActive && isHovered && (
+          <circle
+            cx="50"
+            cy="50"
+            r="48"
+            fill="none"
+            stroke={gaugePrimaryColor}
+            strokeWidth="1"
+            opacity="0.2"
+            className="transition-opacity duration-200"
+          />
+        )}
 
-        {/* Progress Track */}
-        <path
-          d="M50 5 A 45 45 0 1 1 50 95 A 45 45 0 0 1 50 5"
-          strokeWidth="10"
-          strokeLinecap="round"
-          className={cn(!isDragging && "transition-all duration-200")}
-          style={{
-            stroke: gaugePrimaryColor,
-            strokeDasharray: `${progressLength} ${circumference}`,
-            // strokeDashoffset: arcLength / 4,
-          }}
-        />
+        {/* Background Track - Rotated to start at bottom-left */}
+        <g transform="rotate(-135 50 50)">
+          <path
+            d="M50 5 A 45 45 0 1 1 50 95 A 45 45 0 0 1 50 5"
+            strokeWidth="8"
+            strokeLinecap="round"
+            className={cn(
+              "transition-all duration-200",
+              isHovered && isActive && "opacity-100"
+            )}
+            style={{
+              stroke: gaugeSecondaryColor,
+              strokeDasharray: `${arcLength} ${circumference}`,
+              opacity: isActive ? 0.6 : 0.3,
+            }}
+          />
+        </g>
+
+        {/* Progress Track - Rotated to start at bottom-left */}
+        <g transform="rotate(-135 50 50)">
+          <path
+            d="M50 5 A 45 45 0 1 1 50 95 A 45 45 0 0 1 50 5"
+            strokeWidth="8"
+            strokeLinecap="round"
+            className={cn(
+              "transition-all duration-200",
+              isDragging && "drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]"
+            )}
+            style={{
+              stroke: gaugePrimaryColor,
+              strokeDasharray: `${progressLength} ${circumference}`,
+              filter: isActive && isHovered ? "brightness(1.2)" : "brightness(1)",
+            }}
+          />
+        </g>
+
+        {/* Rotating indicator dot group */}
+        {/* 
+        <g 
+          transform={`rotate(${indicatorAngle} 50 50)`}
+          className="transition-transform duration-500"
+        >
+          <circle
+            cx="50"
+            cy="5"
+            r="3"
+            fill={isActive ? gaugePrimaryColor : gaugeSecondaryColor}
+            className="transition-colors duration-200"
+            style={{
+              filter: isDragging ? "brightness(1.5)" : "brightness(1)",
+            }}
+          />
+        </g>
+        */}
       </svg>
 
       <div
         className={cn(
-          "absolute inset-0 flex items-center justify-center select-none",
-          "rounded-full transition-all duration-200",
-          isHovered && !isDragging && "bg-white/5",
-          isDragging && "bg-white/10"
+          "absolute inset-0 flex flex-col items-center justify-center select-none",
+          "transition-all duration-200"
         )}
       >
-        <span className="text-xl">
-          {value} {prefix}
+        <span className={cn(
+          "text-lg font-bold",
+          isActive ? "text-white" : "text-slate-500"
+        )}>
+          {value}{prefix}
         </span>
-        <span className="text-base absolute bottom-0">{label}</span>
+        <span className={cn(
+          "text-[10px] uppercase tracking-wider mt-1",
+          isActive ? "text-slate-400" : "text-slate-600"
+        )}>
+          {label}
+        </span>
       </div>
     </div>
   );
