@@ -1,7 +1,7 @@
 import { useAudioStore } from "@/lib/store";
 import { gateDefaults } from "@/lib/audioState";
 import Knob from "./ui/Knob";
-import { Button } from "./ui/button";
+import Power from "./Power";
 import { cn } from "@/lib/utils";
 
 export default function Gate() {
@@ -10,28 +10,27 @@ export default function Gate() {
   const toggleGate = useAudioStore((state) => state.toggleGate);
 
   return (
-    <div className="h-full flex flex-col gap-4 p-4 bg-slate-800/20 rounded-lg border border-slate-700">
+    <div className="flex flex-col gap-4 p-4 bg-slate-800/20 rounded-lg border border-slate-700">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Noise Gate</h2>
-        <Button 
-          variant={gate.isActive ? "default" : "outline"}
-          size="sm"
+        <button
           onClick={toggleGate}
+          className={cn(!gate.isActive && "opacity-40")}
         >
-          {gate.isActive ? "ON" : "OFF"}
-        </Button>
+          <Power />
+        </button>
       </div>
 
       {/* Gate Controls */}
       <div
         className={cn(
-          "flex-1 grid grid-cols-2 gap-4",
+          "flex-1 ",
           !gate.isActive && "opacity-40 pointer-events-none"
         )}
       >
         {/* Threshold */}
-        <div className="flex flex-col items-center justify-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-600/50">
+        <div className="flex items-center justify-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-600/50">
           <Knob
             value={gate.threshold}
             isActive={gate.isActive}
@@ -39,10 +38,8 @@ export default function Gate() {
             onChange={(value: number) => updateGate("threshold", value)}
             sensitivity={0.5}
           />
-        </div>
 
-        {/* Smoothing */}
-        <div className="flex flex-col items-center justify-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-600/50">
+          {/* Smoothing */}
           <Knob
             value={gate.smoothing}
             isActive={gate.isActive}

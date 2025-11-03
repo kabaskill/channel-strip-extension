@@ -8,7 +8,8 @@ import EQ from "./components/EQ";
 import Gate from "./components/Gate";
 import PitchShift from "./components/PitchShift";
 import Mono from "./components/Mono";
-import { Button } from "./components/ui/button";
+import Power from "./components/Power";
+import { cn } from "@/lib/utils";
 import { useMeterValues } from "./hooks/useMeterValues";
 
 export default function App() {
@@ -31,30 +32,30 @@ export default function App() {
         </h1>
       </div>
 
-      {/* Main Content - 3 Column Grid */}
+      {/* Main Content */}
       <div className="flex-1 grid grid-cols-[1fr_auto_auto] gap-4 p-4 overflow-hidden">
-        {/* Column 1: Tab Navigation */}
+        {/* Tab Navigation */}
         <Tabs defaultValue="eq" className="flex gap-4" orientation="vertical">
           <TabsList className="flex flex-col h-fit gap-2 bg-slate-800/50 p-2">
-            <TabsTrigger 
-              value="eq" 
+            <TabsTrigger
+              value="eq"
               className="justify-start w-full data-[state=active]:bg-slate-700"
             >
               EQ
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="compressor"
               className="justify-start w-full data-[state=active]:bg-slate-700"
             >
               Compressor
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="gate"
               className="justify-start w-full data-[state=active]:bg-slate-700"
             >
               Gate
             </TabsTrigger>
-            <TabsTrigger 
+            <TabsTrigger
               value="pitchShift"
               className="justify-start w-full data-[state=active]:bg-slate-700"
             >
@@ -62,31 +63,31 @@ export default function App() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Column 2: Module Controls */}
+          {/* Module Controls */}
           <div className="flex-1 min-w-0">
-            <TabsContent 
-              value="gate" 
+            <TabsContent
+              value="gate"
               className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
             >
               <Gate />
             </TabsContent>
-            
-            <TabsContent 
-              value="eq" 
+
+            <TabsContent
+              value="eq"
               className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
             >
               <EQ />
             </TabsContent>
 
-            <TabsContent 
-              value="compressor" 
+            <TabsContent
+              value="compressor"
               className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
             >
               <Compressor />
             </TabsContent>
 
-            <TabsContent 
-              value="pitchShift" 
+            <TabsContent
+              value="pitchShift"
               className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col"
             >
               <PitchShift />
@@ -95,7 +96,64 @@ export default function App() {
           </div>
         </Tabs>
 
-        {/* Column 2: Meters */}
+
+        {/* Master Controls (Gain & Volume) */}
+        <div className="flex flex-col gap-2 min-w-[160px] bg-slate-800/30 rounded-lg p-4 border border-slate-700">
+          {/* Gain Section */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-full inline-flex items-center justify-between text-center">
+              <h3 className="text-sm font-semibold text-slate-300 mb-1">GAIN</h3>
+              <button
+                onClick={toggleGain}
+                className={cn(!gain.isActive && "opacity-40")}
+              >
+                <Power />
+              </button>
+            </div>
+            <Knob
+              value={gain.value}
+              isActive={gain.isActive}
+              defaults={gainDefaults}
+              onChange={setGain}
+              sensitivity={0.4}
+              className="w-24"
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="border-t border-slate-700" />
+
+          {/* Mono Section */}
+          <Mono />
+
+          {/* Divider */}
+          <div className="border-t border-slate-700" />
+
+          {/* Volume Section */}
+          <div className="flex flex-col gap-3 flex-1">
+            <div className="inline-flex items-center justify-between text-center">
+              <h3 className="text-sm font-semibold text-slate-300 mb-1">VOLUME</h3>
+              <button
+                onClick={toggleVolume}
+                className={cn(!volume.isActive && "opacity-40")}
+              >
+                <Power />
+              </button>
+            </div>
+            <div className="flex-1 flex items-center justify-center">
+              <Knob
+                value={volume.value}
+                isActive={volume.isActive}
+                defaults={volumeDefaults}
+                onChange={setVolume}
+                sensitivity={1}
+                className="w-24"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Meters */}
         <div className="relative flex gap-4 bg-slate-800/30 rounded-lg p-4 border border-slate-700">
           <Meter
             getValue={() => meters.input}
@@ -114,69 +172,6 @@ export default function App() {
               <p className="text-xs text-slate-500">No Audio</p>
             </div>
           )}
-        </div>
-
-        {/* Column 3: Master Controls (Gain & Volume) */}
-        <div className="flex flex-col gap-6 min-w-[160px] bg-slate-800/30 rounded-lg p-4 border border-slate-700">
-          {/* Gain Section */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-full inline-flex items-center justify-between text-center">
-              <h3 className="text-sm font-semibold text-slate-300 mb-1">GAIN</h3>
-              <Button
-                variant={gain.isActive ? "default" : "outline"}
-                size="sm"
-                onClick={toggleGain}
-              >
-                {gain.isActive ? "ON" : "OFF"}
-              </Button>
-            </div>
-            <Knob
-              value={gain.value}
-              isActive={gain.isActive}
-              defaults={gainDefaults}
-              onChange={setGain}
-              sensitivity={0.4}
-              className="w-24"
-            />
-          </div>
-
-          {/* Divider */}
-          <div className="border-t border-slate-700" />
-
-          {/* Mono Section */}
-          <Mono />
-
-          <div className="border-t border-slate-700" />
-
-          {/* Volume Section */}
-          <div className="flex flex-col gap-3 flex-1">
-            <div className="inline-flex items-center justify-between text-center">
-              <h3 className="text-sm font-semibold text-slate-300 mb-1">VOLUME</h3>
-              <Button
-                variant={volume.isActive ? "default" : "outline"}
-                size="sm"
-                onClick={toggleVolume}
-              >
-                {volume.isActive ? "ON" : "OFF"}
-              </Button>
-            </div>
-            <div className="flex-1 flex items-center justify-center">
-              {/* <Fader */}
-              {/*   value={volume.value} */}
-              {/*   isActive={volume.isActive} */}
-              {/*   defaults={volumeDefaults} */}
-              {/*   onChange={setVolume} */}
-              {/* /> */}
-              <Knob
-                value={volume.value}
-                isActive={volume.isActive}
-                defaults={volumeDefaults}
-                onChange={setVolume}
-                sensitivity={10}
-                className="w-24"
-              />
-            </div>
-          </div>
         </div>
       </div>
     </div>
