@@ -37,7 +37,6 @@ export default function PitchShift() {
             defaults={pitchShiftDefaults.pitch}
             onChange={(value: number) => updatePitchShift("pitch", value)}
             sensitivity={0.3}
-            className="w-32 h-32"
           />
         </div>
       </div>
