@@ -1,5 +1,7 @@
 # Channel Strip Chrome Extension
 
+![Channel Strip Screenshot](./public/screenshot.png)
+
 A Chrome extension for manipulating audio playback with various effect.
 
 ## Features - more on the way
@@ -21,7 +23,6 @@ The extension provides a complete audio processing chain:
 ### Future plans
 
 - Support for other browsers
-
 
 ## Installation - Local only for now
 
