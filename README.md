@@ -12,6 +12,17 @@ The extension provides a complete audio processing chain:
 - **Dynamic Compressor**: Professional dynamics processing with threshold, ratio, attack and release controls
 - **Pitch Shifter**: Transpose playing audio by semitones
 
+## Developer Roadmap
+
+- Pitch Shifting sounds okay in the range of 1-2 semitones. More than that breaks the audio. So the next update would be improving the Pitch Shifter to better handle the bigger intervals.
+- More audio modules are always on the table. Simplest to implement would be the Delay. Currently, adding more audio modules are not the priority though.
+- The signal chain is static. Meaning, you can't change the order of the modules at the time of writing this. Implementing the ability to put modules or copies of modules to any point on the signal chain would be a next natural step for the development process.
+
+### Future plans
+
+- Support for other browsers
+
+
 ## Installation - Local only for now
 
 1. Clone the repository
@@ -42,15 +53,11 @@ The extension provides a complete audio processing chain:
 ## Architecture
 
 ```
-[Media Element] → [EQ3] → [Compressor] → [Gain] → [Master Output]
+[Media Element] -> [EQ3] -> [Compressor] -> [Gate] -> [Pitch Shifter] -> [Gain] -> [Mono] -> [Master Output]
 ```
-
-- **Content Script**: Loads Tone.js and manages audio processing per tab
-- **Popup UI**: React-based interface with Zustand state management
-- **State Persistence**: Automatic Chrome storage sync
 
 ## Known Issues
 
-- Extension requires Tone.js to load from CDN on first use
-- May require page refresh on some websites
-- Best tested on YouTube, Spotify, and common video sites
+- Extension don't wait for the user interaction to start the audio engine resulting an error.
+- May require page refresh
+- Best tested on YouTube. It should work on other audio/video semitones
