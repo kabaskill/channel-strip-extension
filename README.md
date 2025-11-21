@@ -39,7 +39,6 @@ The extension provides a complete audio processing chain:
 - **Tailwind** 
 - **Zustand** 
 - **Tone.js**
-- **shadcn/ui**
 - **TypeScript**
 - **Chrome Extensions API** 
 
